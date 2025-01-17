@@ -1,25 +1,54 @@
+from time import sleep
 import os
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
 from flask import Flask, request, jsonify
+import mysql.connector
 
 import requests
-
-
-########################################
-#                                      #
-#  Тут скорее всего база не нужна,     #
-#  но все зависимости для подключения  #
-#  в контейнере присутствуют.          #
-#                                      #
-########################################
 
 
 NAME = os.environ.get("DATABASE_USER")
 
 
-app = Flask(__name__)
+class DbManager:
+
+    def __init__(self, timeout=15) -> None:
+
+        db_host     = os.environ.get("DATABASE_HOST")
+        db_user     = os.environ.get("DATABASE_USER")
+        db_password = os.environ.get("DATABASE_PASSWORD")
+        db_database = os.environ.get("DATABASE_NAME")
+        db_port     = 3306
+
+        for _ in range(timeout):
+            try:
+                self.connection = mysql.connector.connect(
+                    host=db_host,
+                    user=db_user,
+                    password=db_password,
+                    port=db_port,
+                    database=db_database,
+                )
+                break
+            except Exception as e:
+                print(e)
+                print("Wainting for database to start up...")
+                sleep(1)
+        else:
+            raise TimeoutError(f"Sth went wrong on {self.__class__.__name__} startup.")
+        
+        self.cursor = self.connection.cursor()
+        print("Connected successfully!")
+
+    def __del__(self):
+        self.connection.close()
+
+
+dbmanager = DbManager()
+app       = Flask(__name__)
+
 
 
 @app.route("/")
