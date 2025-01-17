@@ -42,6 +42,9 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ChatbotMemoryDB.* TO 'query_retriever'@'
 CREATE USER 'db_retriever'@'%' IDENTIFIED BY 'qwerty';
 GRANT SELECT, INSERT, UPDATE, DELETE ON ChatbotMemoryDB.* TO 'db_retriever'@'%';
 
+CREATE USER 'reply_generator'@'%' IDENTIFIED BY 'qwerty';
+GRANT SELECT, INSERT, UPDATE, DELETE ON ChatbotMemoryDB.* TO 'reply_generator'@'%';
+
 FLUSH PRIVILEGES;
 
 
