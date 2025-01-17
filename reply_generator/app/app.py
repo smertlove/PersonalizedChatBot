@@ -54,6 +54,13 @@ app       = Flask(__name__)
 @app.route("/")
 def index():
 
+    # dbmanager.cursor.execute(
+    #     """
+    #         SHOW TABLES;
+    #     """
+    # )
+    # tables = dbmanager.cursor.fetchall()
+
     logging.debug(f"A DEBUG Message from {NAME}.")
 
     return f"<h1>Hello from {NAME}!</h1>"
