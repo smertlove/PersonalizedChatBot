@@ -34,16 +34,36 @@ class ChatBot:
         # Для каждого триплета достали похожие факты
         associative_facts = []
 
-        for fact in extracted_thriplets:
+        for i, fact in enumerate(extracted_thriplets):
             associative_facts.extend(
                 get_top_n_closest_embeddings(
                     fact,
                     self.database
-                )
+                ) + [
+                        [
+                            len(self.database.raw_facts) + i,
+                            "9999-99-99 99:99:99",
+                            fact,
+                            self.database.vectorizer.vectorize(fact)
+                        ]
+                ]
             )
 
         # Удалили коллизии из полученных из базы фактов
-        facts_to_RAG = self.resolver.del_collisions(associative_facts)
+        facts_to_RAG = [
+            row
+            for row
+            in self.resolver.del_collisions(associative_facts)
+            if row[1][:4] != "9999"
+        ]
+
+        # Удалили из ассоциативных фактов новые факты
+        associative_facts = [
+            row
+            for row
+            in associative_facts
+            if row[1][:4] != "9999"
+        ]
 
         # И из самой базы их тоже удалили
         l_facts_ids_set = {fact[0] for fact in associative_facts}
