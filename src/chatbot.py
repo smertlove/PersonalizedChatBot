@@ -1,3 +1,4 @@
+from .cold_start import PersonaModel
 from .dbretriever import Database, Vectorizer, get_top_n_closest_embeddings, CollisionResolver
 from .generator import ResponseGenerator
 
@@ -8,7 +9,8 @@ class ChatBot:
     def __init__(self):
 
         # агент Сани
-        self.cold_starter = ...
+        self.cold_starter = PersonaModel()
+        self.new_user = True
 
         # агент Лизы
         self.extractor = ...
@@ -30,6 +32,12 @@ class ChatBot:
             "I love Genshin Impact",
             "I live with my parents"
         ]
+
+        if self.new_user:
+            self.new_user = False
+            user_embedding = self.cold_starter.model.encode(" ".join(extracted_thriplets))
+            similar_to_user = self.cold_starter.find_similar_users(user_embedding)
+            
 
         # Для каждого триплета достали похожие факты
         associative_facts = []
