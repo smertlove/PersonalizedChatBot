@@ -3,7 +3,7 @@ from pathlib import Path
 
 class ColdStartConfig:
     MODEL_NAME = r"sch-allie/bert_persona"
-    PERSONAS = Path(__file__).parent / "data" / "FINAL_FINAL_flattened_data.pkl"
+    PERSONAS = Path(__file__).parent / "data" / "facts_for_coldstart.csv"
     DEVICE = r"cuda"
 
 

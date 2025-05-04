@@ -7,9 +7,12 @@ from .config import ColdStartConfig
 
 class PersonaModel:
     def __init__(self, model_path=ColdStartConfig.MODEL_NAME, data_path=ColdStartConfig.PERSONAS):
-        self.model = SentenceTransformer(model_path)
-        self.data = pd.read_pickle(data_path)
-        self.embeddings = self.data['persona_embeddings']
+        self.model = SentenceTransformer(model_path).to(ColdStartConfig.DEVICE)
+
+        self.data = pd.read_csv(data_path, sep="\t", index_col=0)
+        self.data["persona_embeddings"] = self.data["facts"].map(lambda fact: self.model.encode(fact))
+
+        self.embeddings = self.data["persona_embeddings"]
 
     def find_similar_users(self, target_user_embed, top_n=5):
         similarities = {}
