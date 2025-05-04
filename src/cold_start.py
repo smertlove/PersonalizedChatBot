@@ -14,7 +14,7 @@ class PersonaModel:
 
         self.embeddings = self.data["persona_embeddings"]
 
-    def find_similar_users(self, target_user_embed, top_n=5):
+    def find_similar_users(self, target_user_embed, top_n=ColdStartConfig.TOP_N_PERSONAS):
         similarities = {}
         for user_id, embedding in self.embeddings.items():
             sim_score = cosine_similarity([target_user_embed], [embedding])[0][0]

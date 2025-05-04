@@ -34,28 +34,40 @@ class ChatBot:
         ]
 
         if self.new_user:
-            self.new_user = False
             user_embedding = self.cold_starter.model.encode(" ".join(extracted_thriplets))
             similar_to_user = self.cold_starter.find_similar_users(user_embedding)
-            
 
-        # Для каждого триплета достали похожие факты
-        associative_facts = []
-
-        for i, fact in enumerate(extracted_thriplets):
-            associative_facts.extend(
-                get_top_n_closest_embeddings(
-                    fact,
-                    self.database
-                ) + [
+            associative_facts = []
+            for i, user in enumerate(similar_to_user):
+                persona = self.cold_starter.data['facts'][user[0]]
+                for j, fact in enumerate(persona.split(", ")):
+                    associative_facts.append(
                         [
-                            len(self.database.raw_facts) + i,
-                            "9999-99-99 99:99:99",
+                            i*100 + j*10,
+                            "1986-88-60 00:25:24",
                             fact,
                             self.database.vectorizer.vectorize(fact)
                         ]
-                ]
-            )
+                    )
+
+        else:
+            # Для каждого триплета достали похожие факты
+            associative_facts = []
+
+            for i, fact in enumerate(extracted_thriplets):
+                associative_facts.extend(
+                    get_top_n_closest_embeddings(
+                        fact,
+                        self.database
+                    ) + [
+                            [
+                                len(self.database.raw_facts) + i,
+                                "9999-99-99 99:99:99",
+                                fact,
+                                self.database.vectorizer.vectorize(fact)
+                            ]
+                    ]
+                )
 
         # Удалили коллизии из полученных из базы фактов
         facts_to_RAG = [
@@ -73,13 +85,16 @@ class ChatBot:
             if row[1][:4] != "9999"
         ]
 
-        # И из самой базы их тоже удалили
-        l_facts_ids_set = {fact[0] for fact in associative_facts}
-        rag_facts_ids_set = {fact[0] for fact in facts_to_RAG}
-        ids2del = l_facts_ids_set - rag_facts_ids_set
+        if not self.new_user:
+            # И из самой базы их тоже удалили
+            l_facts_ids_set = {fact[0] for fact in associative_facts}
+            rag_facts_ids_set = {fact[0] for fact in facts_to_RAG}
+            ids2del = l_facts_ids_set - rag_facts_ids_set
 
-        for id_ in sorted(ids2del, reverse=True):
-            self.database.delete(id_)
+            for id_ in sorted(ids2del, reverse=True):
+                self.database.delete(id_)
+        else:
+            self.new_user = False
 
         # Добавили в базу новые факты
         for fact in extracted_thriplets:

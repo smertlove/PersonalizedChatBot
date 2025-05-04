@@ -5,6 +5,7 @@ class ColdStartConfig:
     MODEL_NAME = r"sch-allie/bert_persona"
     PERSONAS = Path(__file__).parent / "data" / "facts_for_coldstart.csv"
     DEVICE = r"cuda"
+    TOP_N_PERSONAS = 1
 
 
 class DBRetrieverConfig:
@@ -23,8 +24,8 @@ class DBRetrieverConfig:
     # Минимальный порог расстояния между объектами для их попадания в один кластер
     CLUSTERING_THRESHOLD = 0.01
 
-    #POPULATE = Path(__file__).parent / "data" / "syntetic_facts.txt"
-    POPULATE = None
+    POPULATE = Path(__file__).parent / "data" / "syntetic_facts.txt"
+    # POPULATE = None
 
 
 class GeneratorConfig:
