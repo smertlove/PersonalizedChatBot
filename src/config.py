@@ -1,6 +1,12 @@
 from pathlib import Path
 
 
+class ColdStartConfig:
+    MODEL_NAME = r"sch-allie/bert_persona"
+    PERSONAS = Path(__file__).parent / "data" / "FINAL_FINAL_flattened_data.pkl"
+    DEVICE = r"cuda"
+
+
 class DBRetrieverConfig:
     MODEL_NAME = r"sentence-transformers/all-MiniLM-L6-v2"
     DEVICE = r"cuda"
@@ -17,7 +23,8 @@ class DBRetrieverConfig:
     # Минимальный порог расстояния между объектами для их попадания в один кластер
     CLUSTERING_THRESHOLD = 0.01
 
-    POPULATE = Path(__file__).parent / "data" / "syntetic_facts.txt"
+    #POPULATE = Path(__file__).parent / "data" / "syntetic_facts.txt"
+    POPULATE = None
 
 
 class GeneratorConfig:
