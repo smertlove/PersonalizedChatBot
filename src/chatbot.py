@@ -1,37 +1,47 @@
 from .cold_start import PersonaModel
 from .dbretriever import Database, Vectorizer, get_top_n_closest_embeddings, CollisionResolver
 from .generator import ResponseGenerator
+from .extractor import FactExtractorAgent
 
 from pprint import pprint
+
 
 class ChatBot:
 
     def __init__(self):
 
         # агент Сани
+        print("Init cold start...")
         self.cold_starter = PersonaModel()
         self.new_user = True
 
+        print("Init extractor...")
         # агент Лизы
-        self.extractor = ...
+        self.extractor = FactExtractorAgent()
 
+        print("Init db retriever...")
         # Ассоциативная память
         self.vectorizer = Vectorizer()
         self.database = Database(self.vectorizer)
         self.resolver = CollisionResolver()
 
+        print("Init generator...")
         # Генератор ответов
         self.generator = ResponseGenerator()
+
+        print("Ready!!")
 
     def response(self, request: str) -> str:
 
         # Допустим тут отработал агент Лизы
+        extracted_thriplets = self.extractor.process_dialogue(request)
         extracted_thriplets = [
-            "I fear future",
-            "I am unemployed",
-            "I love Genshin Impact",
-            "I live with my parents"
+            " ".join(list(thriplet.values()))
+            for thriplet
+            in extracted_thriplets
         ]
+        print("Триплетики:")
+        pprint(extracted_thriplets)
 
         if self.new_user:
             user_embedding = self.cold_starter.model.encode(" ".join(extracted_thriplets))

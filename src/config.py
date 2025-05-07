@@ -25,8 +25,8 @@ class DBRetrieverConfig:
     # Минимальный порог расстояния между объектами для их попадания в один кластер
     CLUSTERING_THRESHOLD = 0.01
 
-    POPULATE = Path(__file__).parent / "data" / "syntetic_facts.txt"
-    # POPULATE = None
+    # POPULATE = Path(__file__).parent / "data" / "syntetic_facts.txt"
+    POPULATE = None
 
 
 class GeneratorConfig:
