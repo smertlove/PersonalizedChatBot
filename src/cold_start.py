@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+import csv
 from .config import ColdStartConfig
 
 
@@ -9,8 +10,8 @@ class PersonaModel:
     def __init__(self, model_path=ColdStartConfig.MODEL_NAME, data_path=ColdStartConfig.PERSONAS):
         self.model = SentenceTransformer(model_path).to(ColdStartConfig.DEVICE)
 
-        self.data = pd.read_csv(data_path, sep="\t", index_col=0)
-        self.data["persona_embeddings"] = self.data["facts"].map(lambda fact: self.model.encode(fact))
+        self.data = pd.read_csv(data_path, sep=ColdStartConfig.CSV_SEP, index_col=0)
+        self.data["persona_embeddings"] = self.data["persona"].map(lambda fact: self.model.encode(fact))
 
         self.embeddings = self.data["persona_embeddings"]
 
@@ -27,7 +28,7 @@ class PersonaModel:
         new_facts = []
         for user in similar_users:
             idx = user[0]
-            facts = self.data['facts'][idx].split('.')
+            facts = self.data['persona'][idx].split('.')
             for fact in facts:
                 fact = fact.lower().strip('\n')
                 if fact not in new_facts and fact != '':
@@ -47,7 +48,7 @@ def main():
     similar_to_user = persona_model.find_similar_users(user_embedding)
 
     for user in similar_to_user:
-        print(persona_model.data['facts'][user[0]]) #similar personas
+        print(persona_model.data['persona'][user[0]]) #similar personas
 
     unique_facts = persona_model.get_unique_facts(similar_to_user) #facts to use in dialogue
 

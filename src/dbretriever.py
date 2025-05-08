@@ -12,7 +12,6 @@ from .config import DBRetrieverConfig
 
 class Vectorizer:
 
-
     model = SentenceTransformer(DBRetrieverConfig.MODEL_NAME).to(DBRetrieverConfig.DEVICE)
 
     @classmethod

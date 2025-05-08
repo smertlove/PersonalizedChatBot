@@ -32,7 +32,9 @@ class ResponseGenerator:
     self.history = [{"role": "system", "content": self.system_prompt},]
 
   def gen_response(self, request:str, relevant_facts:list[str]) -> str:
+
     query_prompt = self.query_prompt.format("\n".join(relevant_facts), request)
+    query_prompt = query_prompt.replace("`", "")
 
     self.history.append({"role": "user", "content": query_prompt})
 
