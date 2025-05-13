@@ -3,7 +3,8 @@ from pathlib import Path
 
 class ColdStartConfig:
     # MODEL_NAME = r"sch-allie/bert_persona"
-    MODEL_NAME = r"sch-allie/bert_another_persona"
+    # MODEL_NAME = r"sch-allie/bert_another_persona"
+    MODEL_NAME = r"sch-allie/bert-persona-encoder"
     PERSONAS = Path(__file__).parent / "data" / "personas_forcoldstart.csv"
     CSV_SEP = ","
     FACTS_SEP = "\n"
