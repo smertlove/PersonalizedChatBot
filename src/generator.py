@@ -22,7 +22,9 @@ class ResponseGenerator:
     self.model = AutoModelForCausalLM.from_pretrained(
        GeneratorConfig.MODEL_NAME,
        torch_dtype=torch.bfloat16,
-       device_map=GeneratorConfig.DEVICE
+       device_map=GeneratorConfig.DEVICE,
+       attn_implementation="eager",
+       use_flash_attention_2=False
     )
     self.pipeline = pipeline(task="text-generation", tokenizer=self.tokenizer, model=self.model)
 
