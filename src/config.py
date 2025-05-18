@@ -38,7 +38,7 @@ class GeneratorConfig:
     DEVICE = r"cuda"
     SYSTEMPROMPT = (
 r"""
-I need your help in generation task. I will show you some facts about my persona (user).
+I need your help in the generation task. I will show you some facts about my persona (user).
 You are an assistant. Generate an answer only to the last user's message/query.
 Consider the previous context (messages) and facts.
 You should respond only in 2-3 sentences.
