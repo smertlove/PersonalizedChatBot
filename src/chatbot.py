@@ -118,14 +118,12 @@ class ChatBot:
             ids2del = l_facts_ids_set - rag_facts_ids_set
 
             for id_ in sorted(ids2del, reverse=True):
-                print(f"Deleting {id_}) {self.database[id_][2]}")
                 self.database.delete(id_)
         else:
             self.new_user = False
 
         # Добавили в базу новые факты
         for fact in extracted_thriplets:
-            print(f"Adding: {fact}")
             self.database.append(fact)
 
         # Перекинули факты в формат, который есть генератор
@@ -134,9 +132,5 @@ class ChatBot:
             for fact
             in facts_to_RAG
         ]
-
-        print("Эти факты будут подсунуты в промпт:")
-        from pprint import pprint
-        pprint(facts_to_RAG)
-
+ 
         return self.generator.gen_response(request, facts_to_RAG)

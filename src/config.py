@@ -4,7 +4,7 @@ from pathlib import Path
 class ColdStartConfig:
     # MODEL_NAME = r"sch-allie/bert_persona"
     # MODEL_NAME = r"sch-allie/bert_another_persona"
-    MODEL_NAME = r"sch-allie/bert-persona-encoder"
+    MODEL_NAME = r"sch-allie/bert-persona-model"
     PERSONAS = Path(__file__).parent / "data" / "personas_forcoldstart.csv"
     CSV_SEP = ","
     FACTS_SEP = "\n"
@@ -26,8 +26,8 @@ class DBRetrieverConfig:
     DISAMBIG_REPS = 1
 
     # Минимальный порог расстояния между объектами для их попадания в один кластер
-    # CLUSTERING_THRESHOLD = 0.01
-    CLUSTERING_THRESHOLD = 0.1
+    CLUSTERING_THRESHOLD = 0.03
+    # CLUSTERING_THRESHOLD = 0.1
 
     # POPULATE = Path(__file__).parent / "data" / "syntetic_facts.txt"
     POPULATE = None
