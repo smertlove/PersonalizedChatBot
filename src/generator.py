@@ -35,6 +35,7 @@ class ResponseGenerator:
         self.system_prompt = GeneratorConfig.SYSTEMPROMPT
         self.query_prompt = QUERY_PROMPT
 
+    @torch.no_grad()
     def gen_response(self, request: str, relevant_facts: list[str]) -> str:
         torch.cuda.empty_cache()
 
