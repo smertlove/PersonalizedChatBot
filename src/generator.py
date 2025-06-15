@@ -35,22 +35,36 @@ class ResponseGenerator:
         self.system_prompt = GeneratorConfig.SYSTEMPROMPT
         self.query_prompt = QUERY_PROMPT
 
+
+        self.pairs = 6
+        self.history = [{"role": "system", "content": self.system_prompt}]
+
     @torch.no_grad()
     def gen_response(self, request: str, relevant_facts: list[str]) -> str:
         torch.cuda.empty_cache()
 
-        query_prompt = self.query_prompt.format("\n".join(relevant_facts), request)
-        query_prompt = query_prompt.replace("`", "")
+        # query_prompt = self.query_prompt.format("\n".join(relevant_facts), request)
+        # query_prompt = query_prompt.replace("`", "")
+        query_prompt = request
 
-        self.history = [
-            {"role": "system", "content": self.system_prompt},
-            {"role": "user"  , "content": query_prompt}
-        ]
+        self.history.append({"role": "user"  , "content": query_prompt})
 
         templated = self.tokenizer.apply_chat_template(
             self.history, tokenize=False, add_generation_prompt=True
         )
         output = self.pipeline(templated, max_new_tokens=300, return_full_text=False)
+        
         result_txt = output[0].get("generated_text")
 
+        self.history = self.history[:-1] + [
+            {"role": "user"  , "content": request},
+            {"role": "assistant", "content": result_txt}
+       ]
+    
+        if len(self.history) - 1 > self.pairs * 2:
+            self.history = [self.history[0]] + self.history[3:]
+
         return result_txt
+
+    def response(self, request):
+        return self.gen_response(request, None)

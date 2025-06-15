@@ -1,5 +1,5 @@
 import spacy
-import coreferee
+# import coreferee
 from typing import List, Dict
 
 

@@ -96,12 +96,15 @@ class ChatBot:
             associative_facts = self.__get_facts_from_database(request, extracted_thriplets)
 
         # Удалили коллизии из полученных из базы фактов
-        facts_to_RAG = [
-            row
-            for row
-            in self.resolver.del_collisions(associative_facts)
-            if row[1][:4] != "9999"
-        ]
+        if len(associative_facts) > 2:
+            facts_to_RAG = [
+                row
+                for row
+                in self.resolver.del_collisions(associative_facts)
+                if row[1][:4] != "9999"
+            ]
+        else:
+            facts_to_RAG = associative_facts.copy()
 
         # Удалили из ассоциативных фактов новые факты
         associative_facts = [
@@ -132,5 +135,5 @@ class ChatBot:
             for fact
             in facts_to_RAG
         ]
- 
+
         return self.generator.gen_response(request, facts_to_RAG)
