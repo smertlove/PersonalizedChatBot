@@ -1,5 +1,15 @@
 # PersonalizedChatBot
 
-### Задание
+Репозиторий курсовой работы "СОЗДАНИЕ МУЛЬТИАГЕНТНОГО ПЕРСОНАЛИЗИРОВАННОГО ЧАТБОТА", ВШЭ 2024-25 уч.г.
+Реализован мультиагентный персонализированный чатбот на басе Gemma 3 и бызы данных ассоциативной памяти.
 
-1) Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+## Лицензия
+
+Проект распространяется под лицензией MIT.
+
+## Команда разработчиков
+
+- Александра Шаталина: холодный старт
+- Елизавета Корнилова: экстрактор триплетов
+- Кирилл Солошенко: ассоциативная память
+- Марина Севостьянова: генератор ответа
