@@ -4,6 +4,8 @@
 
 Реализован мультиагентный персонализированный чатбот на основе Gemma 3 и базы данных ассоциативной памяти.
 
+Опубликована [статья](https://acl-bg.org/proceedings/2025/RANLPStud%202025/2025.ranlpstud-1.pdf#page=71). ([RANLP Student Research Workshop 2025](https://acl-bg.org/proceedings/2025/RANLPStud%202025/index.html)).
+
 ## Лицензия
 
 Проект распространяется под лицензией MIT.
