@@ -1,9 +1,18 @@
 from .cold_start import PersonaModel
-from .dbretriever import Database, Vectorizer, get_top_n_closest_embeddings, CollisionResolver
+from .dbretriever import Database, Vectorizer, CollisionResolver
 from .generator import ResponseGenerator
 from .extractor import FactExtractorAgent
 
 from .config import ColdStartConfig, DBRetrieverConfig
+
+
+def filter2del(points, resolved_points):
+
+    p_set = set([p.id for p in points])
+    rp_set = set([p.id for p in resolved_points])
+    p2del = p_set - rp_set
+
+    return [p for p in points if p.id in p2del]
 
 
 class ChatBot:
@@ -37,50 +46,34 @@ class ChatBot:
         similar_to_user = self.cold_starter.find_similar_users(user_embedding)
 
         associative_facts = []
-        for i, user in enumerate(similar_to_user):
+        for user in similar_to_user:
             persona = self.cold_starter.data['persona'][user[0]]
-            for j, fact in enumerate(persona.split(ColdStartConfig.FACTS_SEP)):
+            for fact in persona.split(ColdStartConfig.FACTS_SEP):
                 associative_facts.append(
-                    [
-                        i*100 + j*10,
-                        "1986-88-60 00:25:24",
-                        fact,
-                        self.database.vectorizer.vectorize(fact)
-                    ]
-                )
+                    self.database.make_point(fact, "1986-88-60 00:25:24"))
         return associative_facts
 
     def __get_facts_from_database(self, request, thriplets: list[str]):
         associative_facts = []
 
         if thriplets:
-            for i, fact in enumerate(thriplets):
-                associative_facts.extend(
-                    get_top_n_closest_embeddings(
-                        fact,
-                        self.database
-                    ) + [
-                            [
-                                len(self.database.raw_facts) + i,
-                                "9999-99-99 99:99:99",
-                                fact,
-                                self.database.vectorizer.vectorize(fact)
-                            ]
-                    ]
+            for fact in thriplets:
+                facts_from_db = self.database.get_top_n_closest_embeddings(fact)
+                facts_from_db.append(
+                    self.database.make_point(fact, "9999-99-99 99:99:99")
                 )
+                associative_facts.extend(facts_from_db)
         else:
-            associative_facts.extend(
-                get_top_n_closest_embeddings(
-                    request,
-                    self.database,
-                    n=DBRetrieverConfig.FACTS_PER_TRIPLET * 3
-                )
+            facts_from_db = self.database.get_top_n_closest_embeddings(
+                request,
+                n=DBRetrieverConfig.FACTS_PER_TRIPLET * 3
             )
+            associative_facts.extend(facts_from_db)
         return associative_facts
 
     def response(self, request: str,) -> str:
 
-        # Допустим тут отработал агент Лизы
+        # Выделили триплеты
         extracted_thriplets = self.extractor.process_dialogue(request)
         extracted_thriplets = [
             " ".join(list(thriplet.values()))
@@ -98,30 +91,26 @@ class ChatBot:
         # Удалили коллизии из полученных из базы фактов
         if len(associative_facts) > 2:
             facts_to_RAG = [
-                row
-                for row
+                p
+                for p
                 in self.resolver.del_collisions(associative_facts)
-                if row[1][:4] != "9999"
+                if p.payload["date"][:4] != "9999"
             ]
         else:
             facts_to_RAG = associative_facts.copy()
 
         # Удалили из ассоциативных фактов новые факты
-        associative_facts = [
-            row
-            for row
+        old_associative_facts = [
+            p
+            for p
             in associative_facts
-            if row[1][:4] != "9999"
+            if p.payload["date"][:4] != "9999"
         ]
 
         if not self.new_user:
             # И из самой базы их тоже удалили
-            l_facts_ids_set = {fact[0] for fact in associative_facts}
-            rag_facts_ids_set = {fact[0] for fact in facts_to_RAG}
-            ids2del = l_facts_ids_set - rag_facts_ids_set
-
-            for id_ in sorted(ids2del, reverse=True):
-                self.database.delete(id_)
+            ids2del = filter2del(old_associative_facts, facts_to_RAG)
+            self.database.delete([p.id for p in ids2del])
         else:
             self.new_user = False
 
@@ -129,9 +118,9 @@ class ChatBot:
         for fact in extracted_thriplets:
             self.database.append(fact)
 
-        # Перекинули факты в формат, который есть генератор
+        # Перекинули факты в формат, который ест генератор
         facts_to_RAG = [
-            f"{fact[1]} - {fact[2]}"
+            f"{fact.payload['date']} - {fact.payload['fact']}"
             for fact
             in facts_to_RAG
         ]
