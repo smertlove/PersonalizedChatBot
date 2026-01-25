@@ -41,11 +41,13 @@ class ResponseGenerator:
 
     @torch.no_grad()
     def gen_response(self, request: str, relevant_facts: list[str]) -> str:
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
 
-        # query_prompt = self.query_prompt.format("\n".join(relevant_facts), request)
-        # query_prompt = query_prompt.replace("`", "")
-        query_prompt = request
+        # query_prompt = request
+        query_prompt = self.query_prompt.format(
+            "\n".join(relevant_facts),
+            request
+        )
 
         self.history.append({"role": "user"  , "content": query_prompt})
 
@@ -53,7 +55,7 @@ class ResponseGenerator:
             self.history, tokenize=False, add_generation_prompt=True
         )
         output = self.pipeline(templated, max_new_tokens=300, return_full_text=False)
-        
+
         result_txt = output[0].get("generated_text")
 
         self.history = self.history[:-1] + [
