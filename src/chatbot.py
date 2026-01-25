@@ -1,6 +1,6 @@
 from .cold_start import PersonaModel
 from .dbretriever import Database, Vectorizer, CollisionResolver
-from .generator import ResponseGenerator
+from .generator import ResponseGenerator, ResponseGenerator_vLLM
 from .extractor import FactExtractorAgent
 
 from .config import ColdStartConfig, DBRetrieverConfig
@@ -17,7 +17,7 @@ def filter2del(points, resolved_points):
 
 class ChatBot:
 
-    def __init__(self):
+    def __init__(self, use_vllm=False):
 
         self.new_user = True
 
@@ -37,7 +37,10 @@ class ChatBot:
 
         print("Init generator...")
         # Генератор ответов
-        self.generator = ResponseGenerator()
+        if use_vllm:
+            self.generator = ResponseGenerator_vLLM()
+        else:
+            self.generator = ResponseGenerator()
 
         print("Ready!!")
 
