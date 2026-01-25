@@ -20,7 +20,7 @@ class Vectorizer:
         self.model = SentenceTransformer(DBRetrieverConfig.MODEL_NAME).to(DBRetrieverConfig.DEVICE)
 
     def vectorize(self, string: str):
-        return self.model.encode(string)
+        return self.model.encode(string, show_progress_bar=False)
 
 
 class Database:

@@ -11,7 +11,7 @@ class PersonaModel:
         self.model = SentenceTransformer(model_path).to(ColdStartConfig.DEVICE)
 
         self.data = pd.read_csv(data_path, sep=ColdStartConfig.CSV_SEP, index_col=0)
-        self.data["persona_embeddings"] = self.data["persona"].map(lambda fact: self.model.encode(fact))
+        self.data["persona_embeddings"] = self.data["persona"].map(lambda fact: self.model.encode(fact, show_progress_bar=False))
 
         self.embeddings = self.data["persona_embeddings"]
 
