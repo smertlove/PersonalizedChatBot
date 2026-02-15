@@ -9,7 +9,7 @@ with open(TOKENPATH, "r") as file:
     TOKEN = file.read().strip()
 assert TOKEN
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN, threaded=False)
 chatbot = ChatBot(use_vllm=False)
 
 
