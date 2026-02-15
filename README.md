@@ -4,20 +4,22 @@ HSE University 2024-2026
 
 We present the approach that is aimed at effectively expanding the context through integrating a database of associative memory into the pipeline. In order to improve long-term memory and personalization we have utilized methods close to Retrieval-Augmented Generation (RAG). Our method uses a multi-agent pipeline with a cold-start agent for initial interactions, a fact extraction agent to process user inputs, an associative memory agent for storing and retrieving context, and a generation agent for replying to user’s queries.Evaluation results show promising results: a 41% accuracy improvement over the base Gemma3 model (from 16% to 57%). Hence, with our approach, we demonstrate that personalized chatbots can bypass LLM memory limitations while increasing information reliability under the conditions of limited context and memory.
 
-We also have our ChatBot in [Telegram] (tg link...).
+## Installation and usage
 
-## Installation
+```bash
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ pip install -r requirements.txt
+(venv) $ echo YOUR_TG_TOKEN > .token
+(venv) $ python3 telegram_bot.py  # this runs application and makes bot avaliable in Telegram
+```
 
-```
-... 
-pip install -r requirements.txt
-```
-## Usage
+## Usage inside your code
 
-```
+```python
 from src import ChatBot
 
-chatbot = ChatBot(use_vllm=False) # True if you want to use vLLM
+chatbot = ChatBot(use_vllm=False) # True if you want to use vLLM for 3x inference speed boost
 
 print(chatbot.response("""
 I am 32. I do not want a job. I play video games all day. I still live at home with my parents. My favorite drink is iced coffee.
@@ -63,10 +65,12 @@ Our work is distributed under the MIT license.
 
 ## Citation
 
+```txt
 [Personalizing chatbot communication with associative memory](https://aclanthology.org/2025.ranlp-stud.8/)
 Kirill Soloshenko, Alexandra Shatalina, Marina Sevostyanova, Elizaveta Kornilova, and Konstantin Zaitsev. 2025. Personalizing chatbot communication with associative memory. In Proceedings of the 9th Student Research Workshop associated with the International Conference Recent Advances in Natural Language Processing, pages 62–69, Varna, Bulgaria. INCOMA Ltd., Shoumen, Bulgaria.
-
 ```
+
+```bibtex
 @inproceedings{soloshenko-etal-2025-personalizing,
     title = "Personalizing chatbot communication with associative memory",
     author = "Soloshenko, Kirill  and
