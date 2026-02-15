@@ -10,7 +10,7 @@ with open(TOKENPATH, "r") as file:
 assert TOKEN
 
 bot = telebot.TeleBot(TOKEN)
-chatbot = ChatBot(use_vllm=True)
+chatbot = ChatBot(use_vllm=False)
 
 
 @bot.message_handler(commands=["start"])
