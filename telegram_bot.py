@@ -15,7 +15,7 @@ chatbot = ChatBot(use_vllm=True)
 
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
-    bot.reply_to(message, "Hello, how are you doing?")
+    bot.reply_to(message, "Hello! I am a multiagent personalized chatbot. Just send me a message and we will talk!")
 
 
 @bot.message_handler(commands=["help"])
